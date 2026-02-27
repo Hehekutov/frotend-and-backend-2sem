@@ -3,7 +3,7 @@ const cors = require("cors");
 const { nanoid } = require("nanoid");
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(cors({
   origin: "http://localhost:3001",
