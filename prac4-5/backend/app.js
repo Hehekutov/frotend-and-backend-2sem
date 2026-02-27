@@ -10,14 +10,14 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-// ==== Swagger ====
+// ==== Swagger setup ====
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
       title: "Products API",
       version: "1.0.0",
-      description: "CRUD API для интернет-магазина электроники"
+      description: "CRUD API интернет-магазина электроники с фото товаров"
     },
     servers: [
       { url: "http://localhost:3000" }
@@ -31,16 +31,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ==== Data ====
 let products = [
-  { id: nanoid(6), name: "iPhone 15", category: "Смартфоны", description: "Apple смартфон", price: 90000, stock: 10 },
-  { id: nanoid(6), name: "Samsung S23", category: "Смартфоны", description: "Android смартфон", price: 75000, stock: 8 },
-  { id: nanoid(6), name: "MacBook Air", category: "Ноутбуки", description: "Apple ноутбук", price: 120000, stock: 5 },
-  { id: nanoid(6), name: "Lenovo ThinkPad", category: "Ноутбуки", description: "Рабочий ноутбук", price: 95000, stock: 7 },
-  { id: nanoid(6), name: "iPad", category: "Планшеты", description: "Планшет Apple", price: 60000, stock: 12 },
-  { id: nanoid(6), name: "AirPods", category: "Аксессуары", description: "Беспроводные наушники", price: 20000, stock: 20 },
-  { id: nanoid(6), name: "Apple Watch", category: "Аксессуары", description: "Умные часы", price: 35000, stock: 15 },
-  { id: nanoid(6), name: "PlayStation 5", category: "Консоли", description: "Игровая консоль", price: 65000, stock: 6 },
-  { id: nanoid(6), name: "Xbox Series X", category: "Консоли", description: "Игровая консоль Microsoft", price: 60000, stock: 9 },
-  { id: nanoid(6), name: "Dell Monitor", category: "Мониторы", description: "27 дюймов", price: 25000, stock: 14 }
+  { id: nanoid(6), name: "iPhone 15", category: "Смартфоны", description: "Apple смартфон", price: 90000, stock: 10, image: "https://via.placeholder.com/250x180?text=iPhone+15" },
+  { id: nanoid(6), name: "Samsung S23", category: "Смартфоны", description: "Android смартфон", price: 75000, stock: 8, image: "https://via.placeholder.com/250x180?text=Samsung+S23" }
 ];
 
 /**
@@ -58,16 +50,33 @@ let products = [
  *       properties:
  *         id:
  *           type: string
+ *           description: Уникальный идентификатор товара
  *         name:
  *           type: string
+ *           description: Название товара
  *         category:
  *           type: string
+ *           description: Категория товара
  *         description:
  *           type: string
+ *           description: Описание товара
  *         price:
  *           type: number
+ *           description: Цена товара
  *         stock:
  *           type: number
+ *           description: Количество на складе
+ *         image:
+ *           type: string
+ *           description: URL изображения товара
+ *       example:
+ *         id: "abc123"
+ *         name: "iPhone 15"
+ *         category: "Смартфоны"
+ *         description: "Apple смартфон"
+ *         price: 90000
+ *         stock: 10
+ *         image: "https://via.placeholder.com/250x180?text=iPhone+15"
  */
 
 // ==== GET all ====
@@ -75,7 +84,7 @@ let products = [
  * @swagger
  * /api/products:
  *   get:
- *     summary: Получить список товаров
+ *     summary: Получить список всех товаров
  *     tags: [Products]
  *     responses:
  *       200:
@@ -91,6 +100,36 @@ app.get("/api/products", (req, res) => {
   res.json(products);
 });
 
+// ==== GET by ID ====
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   get:
+ *     summary: Получить товар по ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID товара
+ *     responses:
+ *       200:
+ *         description: Товар найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Товар не найден
+ */
+app.get("/api/products/:id", (req, res) => {
+  const product = products.find(p => p.id === req.params.id);
+  if (!product) return res.status(404).json({ error: "Not found" });
+  res.json(product);
+});
+
 // ==== POST create ====
 /**
  * @swagger
@@ -100,6 +139,7 @@ app.get("/api/products", (req, res) => {
  *     tags: [Products]
  *     requestBody:
  *       required: true
+ *       description: Информация о товаре
  *       content:
  *         application/json:
  *           schema:
@@ -113,8 +153,8 @@ app.get("/api/products", (req, res) => {
  *               $ref: '#/components/schemas/Product'
  */
 app.post("/api/products", (req, res) => {
-  const { name, category, description, price, stock } = req.body;
-  const newProduct = { id: nanoid(6), name, category, description, price: Number(price), stock: Number(stock) };
+  const { name, category, description, price, stock, image } = req.body;
+  const newProduct = { id: nanoid(6), name, category, description, price: Number(price), stock: Number(stock), image };
   products.push(newProduct);
   res.status(201).json(newProduct);
 });
@@ -124,7 +164,7 @@ app.post("/api/products", (req, res) => {
  * @swagger
  * /api/products/{id}:
  *   patch:
- *     summary: Обновить товар
+ *     summary: Обновить информацию о товаре
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -150,9 +190,11 @@ app.post("/api/products", (req, res) => {
  *                 type: number
  *               stock:
  *                 type: number
+ *               image:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Товар обновлен
+ *         description: Товар обновлён
  *         content:
  *           application/json:
  *             schema:
@@ -183,7 +225,7 @@ app.patch("/api/products/:id", (req, res) => {
  *         description: ID товара
  *     responses:
  *       204:
- *         description: Товар удален
+ *         description: Товар удалён
  *       404:
  *         description: Товар не найден
  */
@@ -196,4 +238,5 @@ app.delete("/api/products/:id", (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
+  console.log(`Swagger docs: http://localhost:${port}/api-docs`);
 });
