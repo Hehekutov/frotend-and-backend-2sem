@@ -1,0 +1,30 @@
+.product-card {
+  background: #f4f4f4;
+  padding: 20px;
+  border-radius: 12px;
+  width: 250px;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.product-card__image {
+  width: 100%;
+  border-radius: 12px;
+}
+.product-card__title {
+  font-size: 20px;
+  margin: 10px 0;
+}
+.product-card__description {
+  font-size: 14px;
+}
+.product-card__price {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #3498db;
+}
+.product-card--accent {
+  border: 2px solid #3498db;
+}
+
+/*# sourceMappingURL=style.css.map */
