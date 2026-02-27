@@ -1,16 +1,13 @@
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 const express = require("express");
 const cors = require("cors");
 const { nanoid } = require("nanoid");
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
-app.use(cors({
-  origin: "http://localhost:3001",
-  methods: ["GET", "POST", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type"]
-}));
-
+app.use(cors());
 app.use(express.json());
 
 let products = [
@@ -25,13 +22,69 @@ let products = [
   { id: nanoid(6), name: "Xbox Series X", category: "Консоли", description: "Игровая консоль Microsoft", price: 60000, stock: 9 },
   { id: nanoid(6), name: "Dell Monitor", category: "Мониторы", description: "27 дюймов", price: 25000, stock: 14 }
 ];
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Products API",
+      version: "1.0.0"
+    },
+    servers: [
+      { url: "http://localhost:3000" }
+    ]
+  },
+  apis: ["./app.js"]
+};
 
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product:
+ *       type: object
+ *       required:
+ *         - name
+ *         - category
+ *         - description
+ *         - price
+ *         - stock
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         category:
+ *           type: string
+ *         description:
+ *           type: string
+ *         price:
+ *           type: number
+ *         stock:
+ *           type: number
+ */
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Получить список товаров
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Список товаров
+ */
+
+
+// GET all
 app.get("/api/products", (req, res) => {
   res.json(products);
 });
 
+// POST
 app.post("/api/products", (req, res) => {
   const { name, category, description, price, stock } = req.body;
+
   const newProduct = {
     id: nanoid(6),
     name,
@@ -40,10 +93,12 @@ app.post("/api/products", (req, res) => {
     price: Number(price),
     stock: Number(stock)
   };
+
   products.push(newProduct);
   res.status(201).json(newProduct);
 });
 
+// PATCH
 app.patch("/api/products/:id", (req, res) => {
   const product = products.find(p => p.id === req.params.id);
   if (!product) return res.status(404).json({ error: "Not found" });
@@ -52,6 +107,7 @@ app.patch("/api/products/:id", (req, res) => {
   res.json(product);
 });
 
+// DELETE
 app.delete("/api/products/:id", (req, res) => {
   products = products.filter(p => p.id !== req.params.id);
   res.status(204).send();
