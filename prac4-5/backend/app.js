@@ -1,8 +1,8 @@
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
 const express = require("express");
 const cors = require("cors");
 const { nanoid } = require("nanoid");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 const app = express();
 const port = 3000;
@@ -10,6 +10,26 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
+// ==== Swagger ====
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Products API",
+      version: "1.0.0",
+      description: "CRUD API для интернет-магазина электроники"
+    },
+    servers: [
+      { url: "http://localhost:3000" }
+    ]
+  },
+  apis: ["./app.js"]
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// ==== Data ====
 let products = [
   { id: nanoid(6), name: "iPhone 15", category: "Смартфоны", description: "Apple смартфон", price: 90000, stock: 10 },
   { id: nanoid(6), name: "Samsung S23", category: "Смартфоны", description: "Android смартфон", price: 75000, stock: 8 },
@@ -22,22 +42,7 @@ let products = [
   { id: nanoid(6), name: "Xbox Series X", category: "Консоли", description: "Игровая консоль Microsoft", price: 60000, stock: 9 },
   { id: nanoid(6), name: "Dell Monitor", category: "Мониторы", description: "27 дюймов", price: 25000, stock: 14 }
 ];
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Products API",
-      version: "1.0.0"
-    },
-    servers: [
-      { url: "http://localhost:3000" }
-    ]
-  },
-  apis: ["./app.js"]
-};
 
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 /**
  * @swagger
  * components:
@@ -64,6 +69,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *         stock:
  *           type: number
  */
+
+// ==== GET all ====
 /**
  * @swagger
  * /api/products:
@@ -73,43 +80,117 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *     responses:
  *       200:
  *         description: Список товаров
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
  */
-
-
-// GET all
 app.get("/api/products", (req, res) => {
   res.json(products);
 });
 
-// POST
+// ==== POST create ====
+/**
+ * @swagger
+ * /api/products:
+ *   post:
+ *     summary: Добавить новый товар
+ *     tags: [Products]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
+ *     responses:
+ *       201:
+ *         description: Товар добавлен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ */
 app.post("/api/products", (req, res) => {
   const { name, category, description, price, stock } = req.body;
-
-  const newProduct = {
-    id: nanoid(6),
-    name,
-    category,
-    description,
-    price: Number(price),
-    stock: Number(stock)
-  };
-
+  const newProduct = { id: nanoid(6), name, category, description, price: Number(price), stock: Number(stock) };
   products.push(newProduct);
   res.status(201).json(newProduct);
 });
 
-// PATCH
+// ==== PATCH update ====
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   patch:
+ *     summary: Обновить товар
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID товара
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               stock:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Товар обновлен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Товар не найден
+ */
 app.patch("/api/products/:id", (req, res) => {
   const product = products.find(p => p.id === req.params.id);
   if (!product) return res.status(404).json({ error: "Not found" });
-
   Object.assign(product, req.body);
   res.json(product);
 });
 
-// DELETE
+// ==== DELETE ====
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   delete:
+ *     summary: Удалить товар
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID товара
+ *     responses:
+ *       204:
+ *         description: Товар удален
+ *       404:
+ *         description: Товар не найден
+ */
 app.delete("/api/products/:id", (req, res) => {
-  products = products.filter(p => p.id !== req.params.id);
+  const index = products.findIndex(p => p.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: "Not found" });
+  products.splice(index, 1);
   res.status(204).send();
 });
 
