@@ -1,0 +1,60 @@
+<section class="notes-layout">
+  <article class="notes-panel">
+    <h2>Добавить заметку</h2>
+    <p>Добавьте обычную заметку или заметку с напоминанием.</p>
+
+    <form id="note-form" class="form-grid" novalidate>
+      <textarea
+        id="note-input"
+        class="note-input"
+        placeholder="Введите текст заметки"
+        maxlength="300"
+        required
+      ></textarea>
+
+      <div class="row">
+        <span class="meta" id="char-count">0 / 300</span>
+        <button class="button" type="submit">Добавить</button>
+      </div>
+    </form>
+
+    <form id="reminder-form" class="form-grid reminder-form" novalidate>
+      <input
+        id="reminder-text"
+        class="search-input"
+        type="text"
+        maxlength="300"
+        placeholder="Текст заметки с напоминанием"
+        required
+      />
+      <input
+        id="reminder-time"
+        class="search-input"
+        type="datetime-local"
+        required
+      />
+      <div class="row">
+        <span class="meta">Напоминание придёт в выбранное время.</span>
+        <button class="button" type="submit">Добавить с напоминанием</button>
+      </div>
+    </form>
+  </article>
+
+  <article class="notes-panel">
+    <div class="notes-header">
+      <div>
+        <h2>Список заметок</h2>
+        <p class="meta" id="notes-count">0 шт.</p>
+      </div>
+      <div class="toolbar">
+        <button id="clear-btn" class="ghost-button ghost-button--danger" type="button">Очистить</button>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <input id="search-input" class="search-input" type="search" placeholder="Поиск по заметкам" />
+      <div id="notes-empty" class="empty-state" hidden>Заметок пока нет. Добавьте первую запись.</div>
+      <ul id="notes-list" class="notes-list" aria-label="Список заметок"></ul>
+    </div>
+  </article>
+</section>

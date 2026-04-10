@@ -1,0 +1,399 @@
+:root {
+  --bg: #f3f3f3;
+  --surface: #ffffff;
+  --surface-strong: #ffffff;
+  --border: #cfcfcf;
+  --text: #222222;
+  --muted: #666666;
+  --accent: #2f6db2;
+  --accent-dark: #1f4f86;
+  --danger: #b13a3a;
+  --warning: #8a6d1d;
+  --shadow: none;
+  --radius-lg: 8px;
+  --radius-md: 6px;
+  --radius-sm: 4px;
+  --font-display: Arial, sans-serif;
+  --font-body: Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-body);
+  background: var(--bg);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(900px, calc(100% - 20px));
+  margin: 10px auto;
+  min-height: calc(100vh - 20px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+}
+
+.shell-header,
+.content-host,
+.shell-footer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.shell-header {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+}
+
+.shell-header__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.shell-header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.status-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.status-pill {
+  border-radius: 4px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.status-pill.is-online,
+.status-pill.is-secure {
+  color: var(--text);
+  background: #e9f2ff;
+}
+
+.status-pill.is-offline {
+  color: var(--warning);
+  background: #fff4d8;
+}
+
+.tabbar {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.tabbar__button {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 14px;
+  background: #f8f8f8;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 400;
+  transition: none;
+}
+
+.tabbar__button.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent-dark);
+}
+
+.content-host {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+}
+
+.loader-card,
+.error-card,
+.notes-panel,
+.about-panel {
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.loader-card,
+.error-card {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.notes-layout {
+  display: grid;
+  gap: 10px;
+}
+
+.notes-panel {
+  padding: 14px;
+}
+
+.notes-panel h2,
+.about-panel h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.notes-panel p,
+.about-panel p,
+.about-panel li {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.reminder-form {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.note-input,
+.search-input {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 10px 12px;
+  color: var(--text);
+  outline: none;
+  transition: none;
+}
+
+.note-input {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.note-input:focus,
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button,
+.ghost-button,
+.icon-button {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 400;
+  transition: none;
+}
+
+.button {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent-dark);
+}
+
+.ghost-button {
+  padding: 8px 14px;
+  background: #f8f8f8;
+  color: var(--text);
+}
+
+.ghost-button--danger {
+  color: var(--danger);
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+  background: #f8f8f8;
+  color: var(--danger);
+}
+
+.meta {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.notes-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.note-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: #fafafa;
+}
+
+.note-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+.note-date {
+  margin-top: 8px;
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.reminder-badge {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #e9f2ff;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.empty-state {
+  padding: 18px 12px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+
+.about-panel {
+  padding: 14px;
+}
+
+.about-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.about-grid ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.shell-footer {
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+}
+
+.footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  max-width: min(360px, calc(100vw - 36px));
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: #333333;
+  color: #fff;
+  box-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    width: min(100% - 16px, 960px);
+    margin: 8px auto;
+    min-height: calc(100vh - 16px);
+  }
+
+  .shell-header,
+  .content-host,
+  .shell-footer {
+    padding: 12px;
+  }
+
+  .shell-header__top,
+  .notes-header,
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .status-panel {
+    justify-content: flex-start;
+  }
+
+  .tabbar,
+  .footer-actions,
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .tabbar__button,
+  .button,
+  .ghost-button {
+    width: 100%;
+  }
+}
