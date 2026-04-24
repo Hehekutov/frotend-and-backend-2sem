@@ -1,6 +1,9 @@
 {
   "scripts": {
-    "prac13-17:start": "node prac13-17/server.js"
+    "prac13-17:start": "node prac13-17/server.js",
+    "prac19:start": "node prac19-20/practice19/server.js",
+    "prac20:start": "node prac19-20/practice20/server.js",
+    "prac19-20:test": "node prac19-20/tests/run-all.js"
   },
   "dependencies": {
     "axios": "^1.13.5",
@@ -8,8 +11,11 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.19.1",
     "nanoid": "^5.1.6",
+    "pg": "^8.16.3",
     "react-router-dom": "^7.13.1",
+    "sequelize": "^6.37.7",
     "socket.io": "^4.8.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
